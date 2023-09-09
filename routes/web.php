@@ -61,17 +61,16 @@ Route::get('/webauthn/register3', function (Request $request, WebAuthnCredential
     $credential = $assertion->send(new AttestationValidation($user, $request))->thenReturn()->credential;
     // ->then(static function (AttestationValidation $validation): WebAuthnCredential {
     //     // return $validation->credential;
-        
+
     // });
 
     // $this->credential = $this->container->make(AttestationValidator::class)
     //         ->send(new AttestationValidation($this->user(), $this))
-            // ->then(static function (AttestationValidation $validation): WebAuthnCredential {
-            //     return $validation->credential;
-            // });
+    // ->then(static function (AttestationValidation $validation): WebAuthnCredential {
+    //     return $validation->credential;
+    // });
 
     dd($request->container);
-    
 });
 
 Route::get('/webauthn/register2', function (AttestedRequest $request) {
@@ -90,13 +89,11 @@ Route::get('/au', function (Request $request) {
 
 Route::get('/p', function () {
 
-    
+
     Permission::create(['name' => 'create-inventory']);
     Permission::create(['name' => 'update-inventory']);
     Permission::create(['name' => 'view-inventory']);
     Permission::create(['name' => 'delete-inventory']);
-
-
 });
 
 
@@ -153,7 +150,7 @@ Route::middleware(['auth', 'is.admin'])->group(function () {
     Route::get('/resident/{user}/guest/{guest}', [\App\Http\Controllers\GuestController::class, 'show'])->middleware('can:view-guests');
     Route::get('/guest/{guest}/delete', [\App\Http\Controllers\GuestController::class, 'destroy'])->middleware('can:delete-guests');
     Route::post('/guest/{guest}/signing', [\App\Http\Controllers\GuestController::class, 'update'])->middleware(['can:sign-in-guests', 'can:sign-out-guests']);
-    
+
 
     Route::get('/guest/create', [\App\Http\Controllers\GuestController::class, 'create'])->middleware('is.verified')->withoutMiddleware('is.admin');
     Route::post('/guest/store', [\App\Http\Controllers\GuestController::class, 'store'])->middleware('is.verified')->withoutMiddleware('is.admin');
@@ -219,7 +216,7 @@ Route::middleware(['auth', 'is.admin'])->group(function () {
     Route::get('/document/agreement-forms/users/{user}', [\App\Http\Controllers\DocumentController::class, 'user_agreement_forms'])->middleware(['can:edit-document', 'can:stamp-document', 'can:sign-document'])->withoutMiddleware('is.admin');
     Route::get('/assigned-documents/', [\App\Http\Controllers\DocumentController::class, 'assigned_documents'])->middleware(['can:stamp-document', 'can:sign-document'])->withoutMiddleware('is.admin');
     Route::get('/document/list/users/', [\App\Http\Controllers\DocumentController::class, 'user_list'])->middleware(['can:stamp-document', 'can:sign-document'])->withoutMiddleware('is.admin');
-    Route::get('/document/agreement-forms/users/', [\App\Http\Controllers\DocumentController::class, 'agreement_forms'])->middleware(['can:view-document','can:stamp-document', 'can:sign-document'])->withoutMiddleware('is.admin');
+    Route::get('/document/agreement-forms/users/', [\App\Http\Controllers\DocumentController::class, 'agreement_forms'])->middleware(['can:view-document', 'can:stamp-document', 'can:sign-document'])->withoutMiddleware('is.admin');
 });
 
 
@@ -347,8 +344,8 @@ Route::get('/archive/{rent_id}', [RentController::class, 'archive'])->middleware
 Route::get('/decline_rent/{id}', [RentController::class, 'decline_rent'])->middleware(['is.admin', 'can:deline-rent']);
 
 Route::get('/booking/{id}', [RentController::class, 'booking'])->middleware('is.verified');
-Route::get('/booking/{id}/renew', [RentController::class, 'booking_renew'])->middleware('is.verified');
-Route::post('/renew_booking/{id}/', [RentController::class, 'renew_booking'])->middleware('is.verified');
+Route::get('/booking/{id}/renew', [StudentController::class, 'booking_renew'])->middleware('is.verified');
+Route::post('/renew_booking/{id}/', [StudentController::class, 'renew_booking'])->middleware('is.verified');
 Route::get('/book', [RentController::class, 'book']);
 Route::post('/book_a_room', [RentController::class, 'book_room']);
 Route::post('/booking_step', [RentController::class, 'booking_step']);
@@ -439,15 +436,13 @@ Route::middleware(['auth', 'is.admin'])->prefix('inventories')->group(function (
     Route::get('/create', [\App\Http\Controllers\InventoryController::class, 'create'])->middleware(['can:create-inventory']);
     Route::get('/purchased', [\App\Http\Controllers\InventoryController::class, 'purchased'])->middleware(['can:view-inventory']);
     Route::get('/{inventory}', [\App\Http\Controllers\InventoryController::class, 'show'])->middleware(['can:view-inventory']);
-    
+
     Route::post('/store', [\App\Http\Controllers\InventoryController::class, 'store'])->middleware(['can:create-inventory']);
     Route::post('/update/{inventory}', [\App\Http\Controllers\InventoryController::class, 'update'])->middleware(['can:update-inventory']);
     Route::get('/delete/{inventory}', [\App\Http\Controllers\InventoryController::class, 'destroy'])->middleware(['can:delete-inventory']);
     Route::get('/get-items-by-category/{id}', [\App\Http\Controllers\InventoryController::class, 'get_items_by_category'])->middleware(['can:view-inventory']);
-   
+
     Route::get('/get-items-details-by-name/{name}', [\App\Http\Controllers\InventoryController::class, 'get_items_details_by_name'])->middleware(['can:view-inventory']);
-   
-   
 });
 
 //Route for Biometrics

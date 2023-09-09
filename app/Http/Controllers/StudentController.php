@@ -160,7 +160,7 @@ class StudentController extends Controller
         if ($files = $request->file('photo')) {
             // $response = cloudinary()->upload($request->file('photo')->getRealPath())->getSecurePath();
             // $photo = $response;
-            $filesName = 'user-' . Auth::id(). '-picture-file-'.$request->file->hashName();
+            $filesName = 'user-' . Auth::id() . '-picture-file-' . $request->file->hashName();
             $request->file->storeAs('users-files', $filesName, 'public_uploads');
             $photo = url('/users-files/' . $filesName);
         }
@@ -195,7 +195,7 @@ class StudentController extends Controller
         //           'room' => 'required',
         //         ]);
 
-       
+
         Validator::make($request->all(), [
             'room' => 'required',
             'dob' => 'required',
@@ -212,7 +212,7 @@ class StudentController extends Controller
             'matric_number' => 'required|string|unique:users',
         ])->validate();
 
-       
+
         $admission_letter = NULL;
         if ($files = $request->file('admission_letter')) {
 
@@ -227,10 +227,10 @@ class StudentController extends Controller
             $admission_letter = url('/users-files/' . $filesName);
         }
 
-       
+
         $promo = Promo::where('promo_code', $request->input('promo_code'))->first();
- $room = DB::table('rooms')->where('id', $request->input('room'))->first();
- $promo_data = null;
+        $room = DB::table('rooms')->where('id', $request->input('room'))->first();
+        $promo_data = null;
         if (!empty($promo)) {
 
             $room_data = json_decode($promo->promo_data, true);
@@ -245,21 +245,20 @@ class StudentController extends Controller
                     }
                 }
             }
-            
+
             $cal_percentage_off = ($room->price / 100) * $percentage_off;
-        $discount_price = ($room->price - $cal_percentage_off);
+            $discount_price = ($room->price - $cal_percentage_off);
 
-        
-        $promo_data = json_encode([
-            'room_id' => $room->id,
-            'percentage_off' => $percentage_off,
-        ]);
 
+            $promo_data = json_encode([
+                'room_id' => $room->id,
+                'percentage_off' => $percentage_off,
+            ]);
         }
         // dd($percentage_off);
-        
-       
-      
+
+
+
         $insertLastId = DB::table('rents')->insertGetId([
             'user_id' => Auth::user()->id,
             'room_id' => $request->input('room'),
@@ -272,6 +271,7 @@ class StudentController extends Controller
             'updated_at' => Carbon::now(),
             'year' => DB::table('settings')->value('current_year'),
         ]);
+
 
 
         if ($insertLastId) {
@@ -308,7 +308,50 @@ class StudentController extends Controller
 
         // dd($request->all());
         // return redirect('guardian_info');
-        return redirect('purchase/booking/'.$insertLastId);
+        return redirect('purchase/booking/' . $insertLastId);
+    }
+    public function booking_renew($id)
+    {
+        $rent = DB::table('rents')->where('id', $id)->first();
+        $user_id = $rent->user_id;
+
+        return view('pages.booking-renewal')->with(['main_rent' => $rent]);
+    }
+    public function renew_booking(Request $request, $id)
+    {
+
+        $rent = DB::table('rents')->where('id', $id)->first();
+        $room = DB::table('rooms')->where('id', $request->input('room'))->first();
+
+        $insertLastId = DB::table('rents')->insertGetId([
+            'user_id' => Auth::user()->id,
+            'previous_rent' => $rent->id,
+            'type' => 'renewal',
+            'room_id' => $request->input('room'),
+            'price' => $room->price,
+            'original_price' => $room->price,
+            'status' => 'pending',
+            'change_room' => $request->input('room') != $room->id ? true : false,
+            'school_check_status' => $rent->school_check_status,
+            'guarantor_letter_photo' => $rent->guarantor_letter_photo,
+            'guarantor_letter_status' => $rent->guarantor_letter_status,
+            'health_check_photo' => $rent->health_check_photo,
+            'health_check_status' => $rent->health_check_status,
+            'attestation_letter_photo' => $rent->attestation_letter_photo,
+            'attestation_letter_status' => $rent->attestation_letter_status,
+            'updated_at' => Carbon::now(),
+            'year' => DB::table('settings')->value('current_year'),
+        ]);
+
+        //send mail to admin
+        //  $input = ['[first_name]', '[middle_name]', '[last_name]'];
+        // $outfilled = [Auth::user()->first_name, Auth::user()->middle_name, Auth::user()->last_name];
+        // $message =  str_replace($input, $outfilled,  DB::table('settings')->value('application_recieved_message'));
+
+        //  $settings = DB::table('settings')->first();
+        //  send_mail('Admin', $settings->reg_email_recipient, 'Talents Apartment Application', $message);
+
+        return redirect()->back()->with('success', 'Renewal Sent and waiting for aproval');
     }
 
     public function pay_booking(Request $request, Rent $rent)
@@ -331,33 +374,32 @@ class StudentController extends Controller
             ]);
 
             if ($invoice) {
-               
+
                 DB::table('rents')->where('id', $rent->id)->update([
                     'payment_reference' => $application_no,
                 ]);
             }
             createNotification('New Invoice', Auth::user()->first_name, 'Just Created an Invoice for ' . ucwords($request->type));
-
         }
-        
-        if($invoice->status != 'successful' || $invoice->payment_status != 'paid'){
+
+        if ($invoice->status != 'successful' || $invoice->payment_status != 'paid') {
             return view('auth.booking-payment')->with(compact(['rent', 'invoice']));
-        }else{
-            if($rent->proof_status == 'Approved'){
+        } else {
+            if ($rent->proof_status == 'Approved') {
                 $message = 'Your payment is successful! please continue uploading the required document';
-            }else{
+            } else {
                 $message = 'Your payment is successful and waiting for approval';
             }
-            return redirect('booking/'.$rent->id)->with('success', $message);
+            return redirect('booking/' . $rent->id)->with('success', $message);
         }
-        
-    
-            // return json_encode([
-            //     'status' => 'success',
-            //     'message' => 'Invoice created successfully',
-            //     'application_no' => $application_no
-            // ]);
-       
+
+
+        // return json_encode([
+        //     'status' => 'success',
+        //     'message' => 'Invoice created successfully',
+        //     'application_no' => $application_no
+        // ]);
+
     }
 
     public function save_guardian_info(Request $request)
@@ -480,18 +522,17 @@ class StudentController extends Controller
     public function upkeep_messages(Request $request, $id)
     {
         $complain = DB::table('complaints')->where('id', $id)->first();
-        if($complain){
+        if ($complain) {
             return view('pages.upkeep-messages')->with(compact('complain'));
-        }else{
+        } else {
             abort(404, 'Complain Not found');
         }
-       
     }
 
     public function satisfactory_message(Request $request, $id)
     {
         $complain = DB::table('complaints')->where('id', $id)->first();
-        if($complain){
+        if ($complain) {
             DB::table('complaints')->where('id', $id)->update([
                 'satisfactory' => 'not satisfied',
             ]);
@@ -513,24 +554,22 @@ class StudentController extends Controller
                 'created_at' => \Carbon\Carbon::now()->addSeconds(15),
             ]);
             return redirect()->back()->with('success', 'Complian has been labeled as incomplete');
-        }else{
+        } else {
             abort(404, 'Complain Not found');
         }
-       
     }
 
     public function satisfactory_completed(Request $request, $id)
     {
         $complain = DB::table('complaints')->where('id', $id)->first();
-        if($complain){
+        if ($complain) {
             DB::table('complaints')->where('id', $id)->update([
                 'status' => 'completed'
             ]);
             return redirect()->back()->with('success', 'Complian has been labeled as completed');
-        }else{
+        } else {
             abort(404, 'Complain Not found');
         }
-       
     }
 
     public function message(Request $request)

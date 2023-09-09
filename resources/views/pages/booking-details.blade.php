@@ -31,7 +31,7 @@
                             <span class="text-sm">Personal Details </span>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item pt-2">
                         <a class="nav-link text-body" data-scroll="" href="#school_info">
                             <div class="icon me-2">
@@ -61,9 +61,8 @@
                     <li class="nav-item pt-2">
                         <a class="nav-link text-body" data-scroll="" href="#payment_info">
                             <div class="icon me-2">
-                                <svg class="text-dark mb-1" width="16px" height="16px" viewBox="0 0 42 42"
-                                    version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <svg class="text-dark mb-1" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                     <title>box-3d-50</title>
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                         <g transform="translate(-2319.000000, -291.000000)" fill="#FFFFFF"
@@ -179,15 +178,20 @@
             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'super_admin')
 
 
-            
-            <div class="card position-sticky top-1">
+
+                <div class="card position-sticky top-1">
                     <div class="card-header pb-0">
                         <h6>Admin Approval</h6>
 
                     </div>
                     <div class="card-body p-3">
                         <div class="timeline timeline-one-side">
-                            @if ($rent->school_check_status == 'Approved' && $rent->proof_status == 'Approved' && $rent->guarantor_letter_status == 'Approved' && $rent->health_check_status == 'Approved' && $rent->attestation_letter_status == 'Approved')
+                            @if (
+                                $rent->school_check_status == 'Approved' &&
+                                    $rent->proof_status == 'Approved' &&
+                                    $rent->guarantor_letter_status == 'Approved' &&
+                                    $rent->health_check_status == 'Approved' &&
+                                    $rent->attestation_letter_status == 'Approved')
                                 {{-- @if (empty($rent->move_in)) --}}
                                 <form action="/approve_rent" method="post" style="">
                                     <div class="timeline-block mb-3">
@@ -208,14 +212,14 @@
 
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $rent->id }}">
-                                               
+
                                                 Select Room: <select class="form-control"
                                                     data-room_id="{{ $rent->room_id }}" name="room_numbers"
                                                     id="room_numbers">
                                                     <option value="">-Select-</option>
-                                                    @foreach (\App\Models\BedSpace::where('room_id', $rent->room_id)->where('user_id', $rent->user_id)->orwhere('room_id', $rent->room_id)->whereNull('user_id')->where('allocated', false)->get()->unique('room_number')
-        as $roomList)
-                                                        <option @if ($roomList->room_number ==  \App\Models\BedSpace::where('id', $rent->bed_space)->value('room_number')) selected @endif value="{{ $roomList->room_number }}">
+                                                    @foreach (\App\Models\BedSpace::where('room_id', $rent->room_id)->where('user_id', $rent->user_id)->orwhere('room_id', $rent->room_id)->whereNull('user_id')->where('allocated', false)->get()->unique('room_number') as $roomList)
+                                                        <option @if ($roomList->room_number == \App\Models\BedSpace::where('id', $rent->bed_space)->value('room_number')) selected @endif
+                                                            value="{{ $roomList->room_number }}">
                                                             {{ $roomList->room_number }}</option>
                                                     @endforeach
 
@@ -227,8 +231,8 @@
                                                     <option>-Select Room First-</option>
 
                                                 </select>
-                                                
-                                                
+
+
                                                 Move In: <input class="form-control" type="date" name="move_in"
                                                     value="{{ $rent->move_in ? \Carbon\Carbon::parse($rent->move_in)->format('Y-m-d') : '' }}">
                                                 Move Out: <input class="form-control" type="date" name="move_out"
@@ -268,483 +272,464 @@
                             @endif
                         </div>
                     </div>
-               
 
-        @endif
+
+            @endif
 
 
 
         </div>
         <div class="col-lg-9 mt-lg-0 mt-4">
 
-             <div class="card position-sticky top-1 z-index-2 card-body" id="user_details">
-                    <div class="row justify-content-center align-items-center">
-                        <div class="col-sm-auto col-4">
-                            <div class="avatar avatar-xl position-relative">
-                                <img src="{{ $resident->user->photo }}" alt="bruce"
-                                    class="w-100 border-radius-lg shadow-sm">
-                            </div>
+            <div class="card position-sticky top-1 z-index-2 card-body" id="user_details">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-sm-auto col-4">
+                        <div class="avatar avatar-xl position-relative">
+                            <img src="{{ $resident->user->photo }}" alt="bruce"
+                                class="w-100 border-radius-lg shadow-sm">
                         </div>
-                        <div class="col-sm-auto col-8 my-auto">
-                            <div class="h-100">
-                                <h5 class="mb-1 font-weight-bolder">
-                                    {{ $resident->user->first_name }}
-                                    {{ $resident->user->middle_name }}
-                                    {{ $resident->user->last_name }}
-                                </h5>
-                                <p class="mb-0 font-weight-bold text-sm">
-                                    {{ $resident->user->role }}
-                                </p>
-                            </div>
+                    </div>
+                    <div class="col-sm-auto col-8 my-auto">
+                        <div class="h-100">
+                            <h5 class="mb-1 font-weight-bolder">
+                                {{ $resident->user->first_name }}
+                                {{ $resident->user->middle_name }}
+                                {{ $resident->user->last_name }}
+                            </h5>
+                            <p class="mb-0 font-weight-bold text-sm">
+                                {{ $resident->user->role }}
+                            </p>
                         </div>
-                        <div class="col-sm-auto ms-sm-auto mt-sm-0 mt-3 d-flex">
-                            <button class="btn bg-gradient-primary mb-0 ms-2" type="submit" name="submit">Update
-                                Account</button>
+                    </div>
+                    <div class="col-sm-auto ms-sm-auto mt-sm-0 mt-3 d-flex">
+                        <button class="btn bg-gradient-primary mb-0 ms-2" type="submit" name="submit">Update
+                            Account</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4" id="basic-info">
+                <div class="card-header">
+                    <h5>Basic Info</h5>
+                </div>
+                <div class="card-body pt-0">
+
+                    <h4>Personal Info</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Full
+                                Name:</strong> &nbsp;
+                            {{ DB::table('users')->where('id', $user_id)->value('first_name') }}
+                            {{ DB::table('users')->where('id', $user_id)->value('middle_name') }}
+                            {{ DB::table('users')->where('id', $user_id)->value('last_name') }}</li>
+                        <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Mobile:</strong>
+                            &nbsp; {{ DB::table('users')->where('id', $user_id)->value('phone_number') }}</li>
+                        <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong>
+                            &nbsp; {{ DB::table('users')->where('id', $user_id)->value('email') }}</li>
+                        <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Location:</strong>
+                            &nbsp; State:
+                            {{ DB::table('users')->where('id', $user_id)->value('state') }} | City:
+                            {{ DB::table('users')->where('id', $user_id)->value('city') }} |
+                            Street:{{ DB::table('users')->where('id', $user_id)->value('street') }}</li>
+
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="card mt-4" id="school_info">
+                <div class="card-header  mb-0 d-flex">
+                    <h5 class="mb-0">School Information</h5>
+
+                </div>
+
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4>School Info</h4>
+
+                            <ul class="list-group">
+                                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong
+                                        class="text-dark">School:</strong> &nbsp;
+                                    {{ DB::table('users')->where('id', $user_id)->value('school') }}</li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Department:</strong>
+                                    &nbsp;
+                                    {{ DB::table('users')->where('id', $user_id)->value('department') }}
+                                </li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Course:</strong>
+                                    &nbsp; {{ DB::table('users')->where('id', $user_id)->value('course') }}
+                                </li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Level:</strong>
+                                    &nbsp; {{ DB::table('users')->where('id', $user_id)->value('level') }}
+                                </li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-6 mt-3">
+                            @if (Auth::user()->role != 'student')
+                                <h6 class="text-dark text-sm font-weight-bold ">School Info Check </h6>
+
+                                @if ($rent->school_check_status == 'Approved')
+                                    <span
+                                        class="badge badge-sm bg-gradient-success">{{ $rent->school_check_status }}</span>
+                                @else
+                                    <span
+                                        class="badge badge-sm bg-gradient-warning">{{ $rent->school_check_status }}</span>
+                                @endif
+
+
+                                <form action="/booking_status" method="post" class="mt-3" style="font-size:10px">
+                                    @csrf
+                                    <input type="text" name="step" id="" value="school" hidden>
+                                    <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                        hidden>
+                                    <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                        hidden>
+                                    <select onchange="//this.form.submit()" class="form-control" name="status">
+                                        <option value="Pending" @if ($rent->school_check_status == 'Pending') selected @endif>Pending
+                                        </option>
+                                        <option value="Approved" @if ($rent->school_check_status == 'Approved') selected @endif>Approve
+                                        </option>
+                                        <option value="Declined" @if ($rent->school_check_status == 'Declined') selected @endif>Decline
+                                        </option>
+                                    </select>
+                                    <input type="submit" class="btn btn-primary mt-3" value="submit">
+                                </form>
+
+                            @endif
                         </div>
                     </div>
                 </div>
-
-                <div class="card mt-4" id="basic-info">
-                    <div class="card-header">
-                        <h5>Basic Info</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        
-                        <h4>Personal Info</h4>
-                        <ul class="list-group">
-                            <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Full
-                                    Name:</strong> &nbsp;
-                                {{ DB::table('users')->where('id', $user_id)->value('first_name') }}
-                                {{ DB::table('users')->where('id', $user_id)->value('middle_name') }}
-                                {{ DB::table('users')->where('id', $user_id)->value('last_name') }}</li>
-                            <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                    class="text-dark">Mobile:</strong>
-                                &nbsp; {{ DB::table('users')->where('id', $user_id)->value('phone_number') }}</li>
-                            <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                    class="text-dark">Email:</strong>
-                                &nbsp; {{ DB::table('users')->where('id', $user_id)->value('email') }}</li>
-                            <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                    class="text-dark">Location:</strong>
-                                &nbsp; State:
-                                {{ DB::table('users')->where('id', $user_id)->value('state') }} | City:
-                                {{ DB::table('users')->where('id', $user_id)->value('city') }} |
-                                Street:{{ DB::table('users')->where('id', $user_id)->value('street') }}</li>
-
-                        </ul>
-                    </div>
+            </div>
+            <div class="card mt-4" id="payment_info">
+                <div class="card-header">
+                    <h5>Payment Information</h5>
                 </div>
-
-
-                <div class="card mt-4" id="school_info">
-                    <div class="card-header  mb-0 d-flex">
-                        <h5 class="mb-0">School Information</h5>
-
-                    </div>
-
-                    <div class="card-body pt-0">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <h4>School Info</h4>
-
-                                <ul class="list-group">
-                                    <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong
-                                            class="text-dark">School:</strong> &nbsp;
-                                        {{ DB::table('users')->where('id', $user_id)->value('school') }}</li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Department:</strong>
-                                        &nbsp;
-                                        {{ DB::table('users')->where('id', $user_id)->value('department') }}
-                                    </li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Course:</strong>
-                                        &nbsp; {{ DB::table('users')->where('id', $user_id)->value('course') }}
-                                    </li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Level:</strong>
-                                        &nbsp; {{ DB::table('users')->where('id', $user_id)->value('level') }}
-                                    </li>
-
-                                </ul>
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <h6>Proof of Payment</h6>
+                        {{-- <p class="text-sm mb-0"><span class="font-weight-bold ms-1"> Bank Name: GTBank</span></p> --}}
+                        @if ($rent->photo != null)
+                            <div class="col-sm-5 mb-2" style="width:200px;">
+                                <img width="100%" height="100%" src="{{ $rent->photo }}" alt=""
+                                    srcset="">
                             </div>
-                            <div class="col-sm-6 mt-3">
-                                @if (Auth::user()->role != 'student')
-                                    <h6 class="text-dark text-sm font-weight-bold ">School Info Check </h6>
+                        @endif
+                        <div class="col-sm-7">
 
-                                    @if ($rent->school_check_status == 'Approved')
-                                        <span
-                                            class="badge badge-sm bg-gradient-success">{{ $rent->school_check_status }}</span>
-                                    @else
-                                        <span
-                                            class="badge badge-sm bg-gradient-warning">{{ $rent->school_check_status }}</span>
-                                    @endif
-
-
-                                    <form action="/booking_status" method="post" class="mt-3"
-                                        style="font-size:10px">@csrf
-                                        <input type="text" name="step" id="" value="school"
+                            @if (Auth::user()->role == 'student')
+                                @if ($rent->school_check_status == 'Approved')
+                                    <form class="" action="/booking_step" method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <input class="form-control" class="" type="text"
+                                            name="payment_reference" placeholder="Reference/Transaction Nnumber"
+                                            value="{{ $rent->payment_reference }}" id="" required>
+                                        <input type="text" name="step" id="" value="payment" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
                                             hidden>
-                                        <input type="text" name="rent_id" id=""
-                                            value="{{ $id }}" hidden>
-                                        <input type="text" name="user_id" id=""
-                                            value="{{ $user_id }}" hidden>
-                                        <select onchange="//this.form.submit()" class="form-control"
-                                            name="status">
-                                            <option value="Pending"
-                                                @if ($rent->school_check_status == 'Pending') selected @endif>Pending</option>
-                                            <option value="Approved"
-                                                @if ($rent->school_check_status == 'Approved') selected @endif>Approve</option>
-                                            <option value="Declined"
-                                                @if ($rent->school_check_status == 'Declined') selected @endif>Decline</option>
-                                        </select>
-                                        <input type="submit" class="btn btn-primary mt-3" value="submit">
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <input type="file" class="form-control my-2" required name="photo"
+                                            id="">
+                                        <button class="btn btn-info" type="submit">Re-Upload</button>
                                     </form>
-
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card mt-4" id="payment_info">
-                    <div class="card-header">
-                        <h5>Payment Information</h5>
-                    </div>
-                    <div class="card-body pt-0">
-                        <div class="row">
-                            <h6>Proof of Payment</h6>
-                            {{-- <p class="text-sm mb-0"><span class="font-weight-bold ms-1"> Bank Name: GTBank</span></p> --}}
-                            @if ($rent->photo != null)
-                                <div class="col-sm-5 mb-2" style="width:200px;">
-                                    <img width="100%" height="100%" src="{{ $rent->photo }}"
-                                        alt="" srcset="">
-                                </div>
-                            @endif
-                            <div class="col-sm-7">
-
-                                @if (Auth::user()->role == 'student')
-                                    @if ($rent->school_check_status == 'Approved')
-                                        <form class="" action="/booking_step" method="post"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            <input class="form-control" class="" type="text"
-                                                name="payment_reference"
-                                                placeholder="Reference/Transaction Nnumber"
-                                                value="{{ $rent->payment_reference }}" id="" required>
-                                            <input type="text" name="step" id="" value="payment"
-                                                hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <input type="file" class="form-control my-2" required
-                                                name="photo" id="">
-                                            <button class="btn btn-info" type="submit">Re-Upload</button>
-                                        </form>
-                                    @else
-                                        <p class="text-danger">You have to be approved first!</p>
-                                    @endif
                                 @else
-                                    @if ($rent->school_check_status == 'Approved')
-                                        <p class="text-sm mb-0"><span class="ms-1">Reference/Transaction
-                                                Number: <br>
-                                                <p class="text-bold">{{ $rent->payment_reference }} </p>
-                                            </span></p>
-                                        @if ($rent->proof_status == 'Approved')
-                                            <span
-                                                class="badge badge-sm bg-gradient-success">{{ $rent->proof_status }}</span>
-                                        @else
-                                            <span
-                                                class="badge badge-sm bg-gradient-warning">{{ $rent->proof_status ?? 'Pending' }}</span>
-                                        @endif
-
-
-                                        <form action="/booking_status" method="post" class="mt-3"
-                                            style="font-size:10px"> @csrf
-                                            <input type="text" name="step" id="" value="payment"
-                                                hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <select class="form-control" name="status" id="">
-                                                <option value="Pending"
-                                                    @if ($rent->proof_status == 'Pending') selected @endif>Pending
-                                                </option>
-                                                <option value="Approved"
-                                                    @if ($rent->proof_status == 'Approved') selected @endif>Approve
-                                                </option>
-                                                <option value="Declined"
-                                                    @if ($rent->proof_status == 'Declined') selected @endif>Decline
-                                                </option>
-                                            </select>
-                                            <input class="btn btn-primary mt-3" type="submit" value="submit">
-                                        </form>
-                                    @else
-                                        <p class="text-danger">Approve Student First!</p>
-                                    @endif
+                                    <p class="text-danger">You have to be approved first!</p>
                                 @endif
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="card mt-4" id="guarantor_info">
-                    <div class="card-header">
-                        <h5>Guarantor information</h5>
-                        
-                    </div>
-                    <div class="card-body pt-0">
-                        <div class="row mb-3">
-                            <div class="col-sm-5">
-                                <ul class="list-group">
-                                    <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong
-                                            class="text-dark">Full
-                                            Name:</strong> &nbsp;
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_suffix') }}
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_first_name') }}
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_last_name') }}
-                                    </li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Relationship:</strong>
-                                        &nbsp;
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_relationship') }}
-                                    </li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Mobile:</strong>
-                                        &nbsp;
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_phone_number') }}
-                                    </li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Email:</strong>
-                                        &nbsp; {{ DB::table('users')->where('id', $user_id)->value('g_email') }}
-                                    </li>
-                                    <li class="list-group-item border-0 ps-0 text-sm"><strong
-                                            class="text-dark">Location:</strong>
-                                        &nbsp; State:
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_state') }} | City:
-                                        {{ DB::table('users')->where('id', $user_id)->value('g_city') }} |
-                                        Street:{{ DB::table('users')->where('id', $user_id)->value('g_street') }}
-                                    </li>
-
-                                </ul>
-                            </div>
-                            <div class="col-sm-7">
-                                @if (Auth::user()->role != 'student')
+                            @else
+                                @if ($rent->school_check_status == 'Approved')
+                                    <p class="text-sm mb-0"><span class="ms-1">Reference/Transaction
+                                            Number: <br>
+                                            <p class="text-bold">{{ $rent->payment_reference }} </p>
+                                        </span></p>
                                     @if ($rent->proof_status == 'Approved')
-                                        <h6 class="text-dark text-sm font-weight-bold">Guarantor Check</h6>
-                                        <a href="/send_guarantor_form/{{ $user_id }}"
-                                            class="btn btn-warning" type="submit">Send Guarantor form to
-                                            guarantor</a>
-                                        @if ($rent->guarantor_letter_status == 'Approved')
-                                            <span
-                                                class="badge badge-sm bg-gradient-success">{{ $rent->guarantor_letter_status }}</span>
-                                        @else
-                                            <span
-                                                class="badge badge-sm bg-gradient-warning">{{ $rent->guarantor_letter_status ?? 'Pending' }}</span>
-                                        @endif
-
-                                        <form action="/booking_status" class="mt-3" method="post"
-                                            style="font-size:10px">
-                                            @csrf
-                                            <input type="text" name="step" id=""
-                                                value="guarantor" hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <select class="form-control" name="status" id="">
-                                                <option value="Pending"
-                                                    @if ($rent->guarantor_letter_status == 'Pending') selected @endif>Pending
-                                                </option>
-                                                <option value="Approved"
-                                                    @if ($rent->guarantor_letter_status == 'Approved') selected @endif>Approve
-                                                </option>
-                                                <option value="Declined"
-                                                    @if ($rent->guarantor_letter_status == 'Declined') selected @endif>Decline
-                                                </option>
-                                            </select>
-                                            <input class="btn btn-primary mt-3" type="submit" value="submit">
-                                        </form>
-                                        {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p> --}}
+                                        <span class="badge badge-sm bg-gradient-success">{{ $rent->proof_status }}</span>
                                     @else
-                                        <p class="text-danger">Approve Payment First!</p>
+                                        <span
+                                            class="badge badge-sm bg-gradient-warning">{{ $rent->proof_status ?? 'Pending' }}</span>
                                     @endif
+
+
+                                    <form action="/booking_status" method="post" class="mt-3" style="font-size:10px">
+                                        @csrf
+                                        <input type="text" name="step" id="" value="payment" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                            hidden>
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <select class="form-control" name="status" id="">
+                                            <option value="Pending" @if ($rent->proof_status == 'Pending') selected @endif>
+                                                Pending
+                                            </option>
+                                            <option value="Approved" @if ($rent->proof_status == 'Approved') selected @endif>
+                                                Approve
+                                            </option>
+                                            <option value="Declined" @if ($rent->proof_status == 'Declined') selected @endif>
+                                                Decline
+                                            </option>
+                                        </select>
+                                        <input class="btn btn-primary mt-3" type="submit" value="submit">
+                                    </form>
                                 @else
-                                    @if ($rent->proof_status != 'Approved')
-                                        <p class="text-danger">Your Payment is not yet aproved!</p>
-                                    @endif
+                                    <p class="text-danger">Approve Student First!</p>
                                 @endif
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-             
-             <div class="card mt-4" id="health_check">
-                    <div class="card-header">
-                        <h5>Health Check</h5>
-                       
-                    </div>
-                    <div class="card-body d-sm-flex pt-0">
-                        <div class="row">
-                            <h4>Health/Medical Report Photo</h4>
-                            @if ($rent->health_check_photo != null)
-                                <div class="col-sm-5" style="width:200px;">
-                                    <img width="100%" height="100%" src="{{ $rent->health_check_photo }}"
-                                        alt="" srcset="">
-                                </div>
                             @endif
 
-                            <div class="col-sm-7">
-                                @if (Auth::user()->role == 'student')
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card mt-4" id="guarantor_info">
+                <div class="card-header">
+                    <h5>Guarantor information</h5>
+
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row mb-3">
+                        <div class="col-sm-5">
+                            <ul class="list-group">
+                                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Full
+                                        Name:</strong> &nbsp;
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_suffix') }}
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_first_name') }}
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_last_name') }}
+                                </li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Relationship:</strong>
+                                    &nbsp;
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_relationship') }}
+                                </li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Mobile:</strong>
+                                    &nbsp;
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_phone_number') }}
+                                </li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Email:</strong>
+                                    &nbsp; {{ DB::table('users')->where('id', $user_id)->value('g_email') }}
+                                </li>
+                                <li class="list-group-item border-0 ps-0 text-sm"><strong
+                                        class="text-dark">Location:</strong>
+                                    &nbsp; State:
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_state') }} | City:
+                                    {{ DB::table('users')->where('id', $user_id)->value('g_city') }} |
+                                    Street:{{ DB::table('users')->where('id', $user_id)->value('g_street') }}
+                                </li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-7">
+                            @if (Auth::user()->role != 'student')
+                                @if ($rent->proof_status == 'Approved')
+                                    <h6 class="text-dark text-sm font-weight-bold">Guarantor Check</h6>
+                                    <a href="/send_guarantor_form/{{ $user_id }}" class="btn btn-warning"
+                                        type="submit">Send Guarantor form to
+                                        guarantor</a>
                                     @if ($rent->guarantor_letter_status == 'Approved')
-                                        <form class="" action="/booking_step" method="post"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="text" name="step" id="" value="health"
-                                                hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <input type="file" required class="form-control mb-3"
-                                                name="photo" id="">
-                                            <button class="btn btn-info" type="submit">Re-Upload</button>
-                                        </form>
+                                        <span
+                                            class="badge badge-sm bg-gradient-success">{{ $rent->guarantor_letter_status }}</span>
                                     @else
-                                        <p class="text-danger">Your Payment & Guarantor must be aproved first,
-                                            please wait!</p>
+                                        <span
+                                            class="badge badge-sm bg-gradient-warning">{{ $rent->guarantor_letter_status ?? 'Pending' }}</span>
                                     @endif
+
+                                    <form action="/booking_status" class="mt-3" method="post" style="font-size:10px">
+                                        @csrf
+                                        <input type="text" name="step" id="" value="guarantor" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                            hidden>
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <select class="form-control" name="status" id="">
+                                            <option value="Pending" @if ($rent->guarantor_letter_status == 'Pending') selected @endif>
+                                                Pending
+                                            </option>
+                                            <option value="Approved" @if ($rent->guarantor_letter_status == 'Approved') selected @endif>
+                                                Approve
+                                            </option>
+                                            <option value="Declined" @if ($rent->guarantor_letter_status == 'Declined') selected @endif>
+                                                Decline
+                                            </option>
+                                        </select>
+                                        <input class="btn btn-primary mt-3" type="submit" value="submit">
+                                    </form>
+                                    {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p> --}}
                                 @else
-                                    @if ($rent->proof_status == 'Approved' && $rent->guarantor_letter_status == 'Approved')
-                                        <h6 class="text-dark text-sm font-weight-bold">Health Check</h6>
-                                        @if ($rent->health_check_status == 'Approved')
-                                            <span
-                                                class="badge badge-sm bg-gradient-success">{{ $rent->health_check_status }}</span>
-                                        @else
-                                            <span
-                                                class="badge badge-sm bg-gradient-warning">{{ $rent->health_check_status ?? 'Pending' }}</span>
-                                        @endif
-
-                                        <form action="/booking_status" method="post" class="mt-3"
-                                            style="font-size:10px">
-                                            @csrf
-                                            <input type="text" name="step" id="" value="health"
-                                                hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <select class="form-control" name="status" id="">
-                                                <option value="Pending"
-                                                    @if ($rent->health_check_status == 'Pending') selected @endif>Pending
-                                                </option>
-                                                <option value="Approved"
-                                                    @if ($rent->health_check_status == 'Approved') selected @endif>Approve
-                                                </option>
-                                                <option value="Declined"
-                                                    @if ($rent->health_check_status == 'Declined') selected @endif>Decline
-                                                </option>
-                                            </select>
-                                            <input class="btn btn-primary mt-3" type="submit" value="submit">
-                                        </form>
-                                    @else
-                                        <p class="text-danger">Approve Payment and Guarantor First!</p>
-                                    @endif
+                                    <p class="text-danger">Approve Payment First!</p>
                                 @endif
-
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="card mt-4" id="attestation">
-                    <div class="card-header">
-                        <h5>Attestation</h5>
-                       
-                    </div>
-                    <div class="card-body d-sm-flex pt-0">
-                        
-                        <div class="row">
-                            <h4>Letter of Attestation</h4>
-                            @if ($rent->attestation_letter_photo != null)
-                                <div class="col-sm-5 mb-2" style="width:200px;">
-                                    <img width="100%" height="100%"
-                                        src="{{ $rent->attestation_letter_photo }}" alt=""
-                                        srcset="">
-                                </div>
+                            @else
+                                @if ($rent->proof_status != 'Approved')
+                                    <p class="text-danger">Your Payment is not yet aproved!</p>
+                                @endif
                             @endif
-                            <div class="col-sm-7">
-                                @if (Auth::user()->role == 'student')
-                                    @if ($rent->health_check_status == 'Approved')
-                                        <form class="" action="/booking_step" method="post"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="text" name="step" id=""
-                                                value="attestation" hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <input type="file" required class="form-control" name="photo"
-                                                id="">
-                                            <button class="btn btn-info my-3" type="submit">Re-Upload</button>
-                                        </form>
-                                    @else
-                                        <p class="text-danger">You have to be approved first!</p>
-                                    @endif
-                                @else
-                                    @if ($rent->proof_status == 'Approved' && $rent->health_check_status == 'Approved')
-
-                                        <h6 class="text-dark text-sm font-weight-bold">Letter of Attestation
-                                            Check</h6>
-                                        @if ($rent->attestation_letter_status == 'Approved')
-                                            <span
-                                                class="badge badge-sm bg-gradient-success">{{ $rent->attestation_letter_status }}</span>
-                                        @else
-                                            <span
-                                                class="badge badge-sm bg-gradient-warning">{{ $rent->attestation_letter_status ?? 'Pending' }}</span>
-                                        @endif
-
-                                        <form action="/booking_status" method="post" class="mt-3"
-                                            style="font-size:10px">
-                                            @csrf
-                                            <input type="text" name="step" id=""
-                                                value="attestation" hidden>
-                                            <input type="text" name="rent_id" id=""
-                                                value="{{ $id }}" hidden>
-                                            <input type="text" name="user_id" id=""
-                                                value="{{ $user_id }}" hidden>
-                                            <select class="form-control" name="status" id="">
-                                                <option value="Pending"
-                                                    @if ($rent->attestation_letter_status == 'Pending') selected @endif>Pending
-                                                </option>
-                                                <option value="Approved"
-                                                    @if ($rent->attestation_letter_status == 'Approved') selected @endif>Approve
-                                                </option>
-                                                <option value="Declined"
-                                                    @if ($rent->attestation_letter_status == 'Declined') selected @endif>Decline
-                                                </option>
-                                            </select>
-                                            <input class="btn btn-primary mt-3" type="submit" value="submit">
-                                        </form>
-                                    @else
-                                        <p class="text-danger">Approve Other tabs First!</p>
-                                    @endif
-                                @endif
-                            </div>
                         </div>
-
                     </div>
+
+
                 </div>
+            </div>
+
+            <div class="card mt-4" id="health_check">
+                <div class="card-header">
+                    <h5>Health Check</h5>
+
+                </div>
+                <div class="card-body d-sm-flex pt-0">
+                    <div class="row">
+                        <h4>Health/Medical Report Photo</h4>
+                        @if ($rent->health_check_photo != null)
+                            <div class="col-sm-5" style="width:200px;">
+                                <img width="100%" height="100%" src="{{ $rent->health_check_photo }}" alt=""
+                                    srcset="">
+                            </div>
+                        @endif
+
+                        <div class="col-sm-7">
+                            @if (Auth::user()->role == 'student')
+                                @if ($rent->guarantor_letter_status == 'Approved')
+                                    <form class="" action="/booking_step" method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="text" name="step" id="" value="health" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                            hidden>
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <input type="file" required class="form-control mb-3" name="photo"
+                                            id="">
+                                        <button class="btn btn-info" type="submit">Re-Upload</button>
+                                    </form>
+                                @else
+                                    <p class="text-danger">Your Payment & Guarantor must be aproved first,
+                                        please wait!</p>
+                                @endif
+                            @else
+                                @if ($rent->proof_status == 'Approved' && $rent->guarantor_letter_status == 'Approved')
+                                    <h6 class="text-dark text-sm font-weight-bold">Health Check</h6>
+                                    @if ($rent->health_check_status == 'Approved')
+                                        <span
+                                            class="badge badge-sm bg-gradient-success">{{ $rent->health_check_status }}</span>
+                                    @else
+                                        <span
+                                            class="badge badge-sm bg-gradient-warning">{{ $rent->health_check_status ?? 'Pending' }}</span>
+                                    @endif
+
+                                    <form action="/booking_status" method="post" class="mt-3" style="font-size:10px">
+                                        @csrf
+                                        <input type="text" name="step" id="" value="health" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                            hidden>
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <select class="form-control" name="status" id="">
+                                            <option value="Pending" @if ($rent->health_check_status == 'Pending') selected @endif>
+                                                Pending
+                                            </option>
+                                            <option value="Approved" @if ($rent->health_check_status == 'Approved') selected @endif>
+                                                Approve
+                                            </option>
+                                            <option value="Declined" @if ($rent->health_check_status == 'Declined') selected @endif>
+                                                Decline
+                                            </option>
+                                        </select>
+                                        <input class="btn btn-primary mt-3" type="submit" value="submit">
+                                    </form>
+                                @else
+                                    <p class="text-danger">Approve Payment and Guarantor First!</p>
+                                @endif
+                            @endif
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="card mt-4" id="attestation">
+                <div class="card-header">
+                    <h5>Attestation</h5>
+
+                </div>
+                <div class="card-body d-sm-flex pt-0">
+
+                    <div class="row">
+                        <h4>Letter of Attestation</h4>
+                        @if ($rent->attestation_letter_photo != null)
+                            <div class="col-sm-5 mb-2" style="width:200px;">
+                                <img width="100%" height="100%" src="{{ $rent->attestation_letter_photo }}"
+                                    alt="" srcset="">
+                            </div>
+                        @endif
+                        <div class="col-sm-7">
+                            @if (Auth::user()->role == 'student')
+                                @if ($rent->health_check_status == 'Approved')
+                                    <form class="" action="/booking_step" method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="text" name="step" id="" value="attestation" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                            hidden>
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <input type="file" required class="form-control" name="photo"
+                                            id="">
+                                        <button class="btn btn-info my-3" type="submit">Re-Upload</button>
+                                    </form>
+                                @else
+                                    <p class="text-danger">You have to be approved first!</p>
+                                @endif
+                            @else
+                                @if ($rent->proof_status == 'Approved' && $rent->health_check_status == 'Approved')
+
+                                    <h6 class="text-dark text-sm font-weight-bold">Letter of Attestation
+                                        Check</h6>
+                                    @if ($rent->attestation_letter_status == 'Approved')
+                                        <span
+                                            class="badge badge-sm bg-gradient-success">{{ $rent->attestation_letter_status }}</span>
+                                    @else
+                                        <span
+                                            class="badge badge-sm bg-gradient-warning">{{ $rent->attestation_letter_status ?? 'Pending' }}</span>
+                                    @endif
+
+                                    <form action="/booking_status" method="post" class="mt-3" style="font-size:10px">
+                                        @csrf
+                                        <input type="text" name="step" id="" value="attestation" hidden>
+                                        <input type="text" name="rent_id" id="" value="{{ $id }}"
+                                            hidden>
+                                        <input type="text" name="user_id" id="" value="{{ $user_id }}"
+                                            hidden>
+                                        <select class="form-control" name="status" id="">
+                                            <option value="Pending" @if ($rent->attestation_letter_status == 'Pending') selected @endif>
+                                                Pending
+                                            </option>
+                                            <option value="Approved" @if ($rent->attestation_letter_status == 'Approved') selected @endif>
+                                                Approve
+                                            </option>
+                                            <option value="Declined" @if ($rent->attestation_letter_status == 'Declined') selected @endif>
+                                                Decline
+                                            </option>
+                                        </select>
+                                        <input class="btn btn-primary mt-3" type="submit" value="submit">
+                                    </form>
+                                @else
+                                    <p class="text-danger">Approve Other tabs First!</p>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 @section('script')
-<script type="text/javascript" src="/assets/js/countries.js"></script>
+    <script type="text/javascript" src="/assets/js/countries.js"></script>
     <script>
         // Limit user from selecting more than one amenities
         $(document).ready(function() {
@@ -754,14 +739,14 @@
             print_country("country", "Nigeria")
             var get_country_index = $("#country")[0].selectedIndex
             if (get_country_index && state) {
-               print_state('state',get_country_index, '{{ $resident->user->state ?? '' }}')
+                print_state('state', get_country_index, '{{ $resident->user->state ?? '' }}')
             }
             //Make default country & state selected
             var g_state = '{{ $resident->user->g_state ?? '' }}';
             print_country("country", "Nigeria")
             var get_country_index = $("#country")[0].selectedIndex
             if (get_country_index && g_state) {
-               print_state('g_state',get_country_index, '{{ $resident->user->g_state ?? '' }}')
+                print_state('g_state', get_country_index, '{{ $resident->user->g_state ?? '' }}')
             }
 
             $("input[name='amenities[]']").change(function() {
@@ -778,15 +763,15 @@
             });
 
             $("input[name='confirm_delete_user']").change(function() {
-               
-                if($("input[name='confirm_delete_user']").val() == 'on'){
+
+                if ($("input[name='confirm_delete_user']").val() == 'on') {
                     $("#delete_user").attr({
                         "disabled": false,
                         // "role": "alert"
                     });
-               
+
                 }
-                    
+
             });
             // Select all elements with data-toggle="popover" in the document
             // $('[data-toggle="popover"]').popover();
