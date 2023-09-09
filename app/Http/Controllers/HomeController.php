@@ -169,9 +169,25 @@ class HomeController extends Controller
 
     public function get_room_by_id(Request $request)
     {
+        $user = User::find(Auth::user()->id);
+        $bed_space_list = '';
         $room_details = DB::table('rooms')->where('id', $request->id)->where('status', 'available')->where('show_in_site', true)->first();
         // $rooms = $bedSpace = BedSpace::where('room_id', $request->room_id)->where('room_number', $request->room_number)->where('user_id', $request->user_id)->orWhere('room_id', $request->room_id)->where('room_number', $request->room_number)->whereNull('user_id')->where('allocated', false)->get();
         $room_location = DB::table('locations')->where('id', $room_details->location)->value('name');
+
+        $bedSpaces = BedSpace::where('room_id', $room_details->id)->whereNull('user_id')->where('allocated', false)->get();
+
+        $current_rent = $user->current_rent ? DB::table('rents')->where('id', $user->current_rent)->first() : '';
+
+        foreach ($bedSpaces as $bedSpace) {
+            if (isset($current_rent->bed_space)) {
+                $currentBedSpace = BedSpace::where('room_id', $room_details->id)->where('id', $current_rent->bed_space)->first();
+                if ($currentBedSpace) {
+                    $bed_space_list .= '<option value="' . $currentBedSpace->id . '" selected>' . $currentBedSpace->room_number . ' - ' . $currentBedSpace->name . '</option>';
+                }
+            }
+            $bed_space_list .= '<option value="' . $bedSpace->id . '">' . $bedSpace->room_number . ' - ' . $bedSpace->name . '</option>';
+        }
 
         //   $room_amenities = DB::table('amenities')->where('id', $room_details->location)->value('name');
 
@@ -191,6 +207,7 @@ class HomeController extends Controller
             'room_details' => $room_details,
             'room_location' => $room_location ?? '',
             'room_amenities' => $room_amenities ?? '',
+            'bed_space_list' => $bed_space_list ?? '',
         ]);
     }
 

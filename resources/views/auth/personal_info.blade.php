@@ -1,16 +1,3 @@
-<!--
-=========================================================
-* Soft UI Dashboard PRO - v1.0.9
-=========================================================
-
-* Product Page:  https://www.creative-tim.com/product/soft-ui-dashboard-pro
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -249,17 +236,16 @@
                                             </div>
                                         </div>
 
-                                        
+
                                         <h5>jaja Number</h5>
                                         <div class="row mb-3">
 
                                             <div class="col-md-12">
 
                                                 <p class="text-sm"> Enter your jaja Number (optional)</p>
-                                          
-                                                <input  name="jaja_number"
+
+                                                <input name="jaja_number"
                                                     class="form-control @error('jaja_number') is-invalid @enderror"
-                                                    
                                                     placeholder="enter value here">
                                                 @error('jaja_number')
                                                     <span class="invalid-feedback" role="alert">
@@ -269,119 +255,125 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-sm-4">
                                         <h5>Guarantor Info</h5>
-                                        
-                <div class="row mb-3">
 
-                    <div class="col-md-12">
+                                        <div class="row mb-3">
 
-                        <select class="form-control" name="g_relationship" id="" >
-                            <option disabled selected>--Relationship--</option>
-                            <option value="Father">Father</option>
-                            <option value="Mother">Mother</option>
-                            <option value="Brother">Brother</option>
-                            <option value="Sister">Sister</option>
-                            <option value="Uncle">Uncle</option>
-                            <option value="Aunty">Aunty</option>
-                        </select>
-                    </div>
-                </div>
+                                            <div class="col-md-12">
 
-                <div class="row mb-3">
+                                                <select class="form-control" name="g_relationship" id="">
+                                                    <option disabled selected>--Relationship--</option>
+                                                    <option value="Father">Father</option>
+                                                    <option value="Mother">Mother</option>
+                                                    <option value="Brother">Brother</option>
+                                                    <option value="Sister">Sister</option>
+                                                    <option value="Uncle">Uncle</option>
+                                                    <option value="Aunty">Aunty</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                    <div class="col-md-12">
+                                        <div class="row mb-3">
 
-                        <select class="form-control" name="g_suffix" id="" >
-                            <option>--Title--</option>
-                            <option value="Mr">Mr</option>
-                            <option value="Mrs">Mrs</option>
-                            <option value="Prof">Prof</option>
-                            <option value="Doc">Doc</option>
-                            <option value="Engr">Engr</option>
-                            <option value="Chief">Chief</option>
-                            <option value="Alh">Alh</option>
-                            <option value="Alj">Alj</option>
-                        </select>
-                    </div>
-                </div>
+                                            <div class="col-md-12">
 
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input  placeholder="Guardian first name" type="text" class="form-control" name="g_first_name"  autofocus>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input  placeholder="Guardian last_name" type="text" class="form-control" name="g_last_name"  autofocus>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input  placeholder="email" type="email" class="form-control" name="g_email"  autofocus>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input  placeholder="phone number" type="text" class="form-control" name="g_phone_number"  autofocus>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input  placeholder="street" type="text" class="form-control" name="g_street"  autofocus>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input  placeholder="city" type="text" class="form-control" name="g_city"  autofocus>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
+                                                <select class="form-control" name="g_suffix" id="">
+                                                    <option>--Title--</option>
+                                                    <option value="Mr">Mr</option>
+                                                    <option value="Mrs">Mrs</option>
+                                                    <option value="Prof">Prof</option>
+                                                    <option value="Doc">Doc</option>
+                                                    <option value="Engr">Engr</option>
+                                                    <option value="Chief">Chief</option>
+                                                    <option value="Alh">Alh</option>
+                                                    <option value="Alj">Alj</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                        <select class="form-control" name="g_state"  >
-                            <option disabled selected>--Select State--</option>
-                            <option value="Abia">Abia</option>
-                            <option value="Adamawa">Adamawa</option>
-                            <option value="Akwa Ibom">Akwa Ibom</option>
-                            <option value="Anambra">Anambra</option>
-                            <option value="Bauchi">Bauchi</option>
-                            <option value="Bayelsa">Bayelsa</option>
-                            <option value="Benue">Benue</option>
-                            <option value="Borno">Borno</option>
-                            <option value="Cross Rive">Cross River</option>
-                            <option value="Delta">Delta</option>
-                            <option value="Ebonyi">Ebonyi</option>
-                            <option value="Edo">Edo</option>
-                            <option value="Ekiti">Ekiti</option>
-                            <option value="Enugu">Enugu</option>
-                            <option value="FCT">Federal Capital Territory</option>
-                            <option value="Gombe">Gombe</option>
-                            <option value="Imo">Imo</option>
-                            <option value="Jigawa">Jigawa</option>
-                            <option value="Kaduna">Kaduna</option>
-                            <option value="Kano">Kano</option>
-                            <option value="Katsina">Katsina</option>
-                            <option value="Kebbi">Kebbi</option>
-                            <option value="Kogi">Kogi</option>
-                            <option value="Kwara">Kwara</option>
-                            <option value="Lagos">Lagos</option>
-                            <option value="Nasarawa">Nasarawa</option>
-                            <option value="Niger">Niger</option>
-                            <option value="Ogun">Ogun</option>
-                            <option value="Ondo">Ondo</option>
-                            <option value="Osun">Osun</option>
-                            <option value="Oyo">Oyo</option>
-                            <option value="Plateau">Plateau</option>
-                            <option value="Rivers">Rivers</option>
-                            <option value="Sokoto">Sokoto</option>
-                            <option value="Taraba">Taraba</option>
-                            <option value="Yobe">Yobe</option>
-                            <option value="Zamfara">Zamfara</option>
-                        </select>
-                    </div>
-                </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <input placeholder="Guardian first name" type="text"
+                                                    class="form-control" name="g_first_name" autofocus>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <input placeholder="Guardian last_name" type="text"
+                                                    class="form-control" name="g_last_name" autofocus>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <input placeholder="email" type="email" class="form-control"
+                                                    name="g_email" autofocus>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <input placeholder="phone number" type="text" class="form-control"
+                                                    name="g_phone_number" autofocus>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <input placeholder="street" type="text" class="form-control"
+                                                    name="g_street" autofocus>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <input placeholder="city" type="text" class="form-control"
+                                                    name="g_city" autofocus>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+
+                                                <select class="form-control" name="g_state">
+                                                    <option disabled selected>--Select State--</option>
+                                                    <option value="Abia">Abia</option>
+                                                    <option value="Adamawa">Adamawa</option>
+                                                    <option value="Akwa Ibom">Akwa Ibom</option>
+                                                    <option value="Anambra">Anambra</option>
+                                                    <option value="Bauchi">Bauchi</option>
+                                                    <option value="Bayelsa">Bayelsa</option>
+                                                    <option value="Benue">Benue</option>
+                                                    <option value="Borno">Borno</option>
+                                                    <option value="Cross Rive">Cross River</option>
+                                                    <option value="Delta">Delta</option>
+                                                    <option value="Ebonyi">Ebonyi</option>
+                                                    <option value="Edo">Edo</option>
+                                                    <option value="Ekiti">Ekiti</option>
+                                                    <option value="Enugu">Enugu</option>
+                                                    <option value="FCT">Federal Capital Territory</option>
+                                                    <option value="Gombe">Gombe</option>
+                                                    <option value="Imo">Imo</option>
+                                                    <option value="Jigawa">Jigawa</option>
+                                                    <option value="Kaduna">Kaduna</option>
+                                                    <option value="Kano">Kano</option>
+                                                    <option value="Katsina">Katsina</option>
+                                                    <option value="Kebbi">Kebbi</option>
+                                                    <option value="Kogi">Kogi</option>
+                                                    <option value="Kwara">Kwara</option>
+                                                    <option value="Lagos">Lagos</option>
+                                                    <option value="Nasarawa">Nasarawa</option>
+                                                    <option value="Niger">Niger</option>
+                                                    <option value="Ogun">Ogun</option>
+                                                    <option value="Ondo">Ondo</option>
+                                                    <option value="Osun">Osun</option>
+                                                    <option value="Oyo">Oyo</option>
+                                                    <option value="Plateau">Plateau</option>
+                                                    <option value="Rivers">Rivers</option>
+                                                    <option value="Sokoto">Sokoto</option>
+                                                    <option value="Taraba">Taraba</option>
+                                                    <option value="Yobe">Yobe</option>
+                                                    <option value="Zamfara">Zamfara</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <h5>School Info</h5>
@@ -507,80 +499,78 @@
                                     id="show-room-name">Waiting...</span>
                                 <h1 class="font-weight-bold mt-2">
                                     <small class="h3">N</small> <span class="h1"
-                                        id="show-room-price">0.00</span> <span class="text-sm text-danger text-decoration-line-through"
+                                        id="show-room-price">0.00</span> <span
+                                        class="text-sm text-danger text-decoration-line-through"
                                         id="show-original-price"></span>
                                 </h1>
                             </div>
                             <div class="card-body text-lg-start text-center pt-0">
-                               
-                                        <div class="row mb-3">
-                                            <div class="col-md-12">
 
-                                                <select onchange="loc_room()" class="form-control" name="location"
-                                                    id="location" required>
-                                                    <option disabled selected>--Location--</option>
-                                                    @foreach (DB::table('locations')->get() as $locations)
-                                                        <option value="{{ $locations->id }}">
-                                                            {{ $locations->name }}
-                                                        </option>
-                                                    @endforeach
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
 
-                                                </select>
-                                            </div>
+                                        <select onchange="loc_room()" class="form-control" name="location"
+                                            id="location" required>
+                                            <option disabled selected>--Location--</option>
+                                            @foreach (DB::table('locations')->get() as $locations)
+                                                <option value="{{ $locations->id }}">
+                                                    {{ $locations->name }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                {{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> --}}
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <select class="form-control room" name="room" id="room"
+                                            name="room" required>
+                                            <option disabled selected>--Room Type--</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="show-room-amenities">
+
+                                </div>
+
+                                @if (App\Models\Promo::where('active', true)->where('show', true)->count() > 0)
+                                    <div class="form-check form-check-info text-left">
+                                        <input class="form-check-input" type="checkbox" value=""
+                                            id="promo-code-action" @if (request('ref') != null) checked @endif>
+                                        <label class="form-check-label" for="promo-code-action">
+                                            I have a promo code</a>
+                                        </label>
+                                    </div>
+                                    <div id="promo-code-box"
+                                        class=" @if (request('ref') == null) d-none @endif">
+
+                                        <h5>Promo Code <span id="promo-applied" class="text-xs text-success d-none">
+                                                Applied</span></h5>
+                                        <span id="promo-description" class="text-sm"></span>
+                                        <div class="mb-1">
+                                            <input type="text"
+                                                class="form-control @error('promo_code') is-invalid @enderror"
+                                                name="promo_code" id="promo-code" autocomplete="promo_code">
+
+
                                         </div>
+                                        <button type="button" id="check-promo-button"
+                                            class="btn btn-icon btn-sm bg-gradient-dark d-lg-block mt-3 mb-0">
+                                            Apply
+                                        </button>
+                                    </div>
+                                @endif
 
-
-                                        {{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> --}}
-
-                                        <div class="row mb-3">
-                                            <div class="col-md-12">
-                                                <select class="form-control room" name="room" id="room"
-                                                    name="room" required>
-                                                    <option disabled selected>--Room Type--</option>
-
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div id="show-room-amenities">
-
-                                        </div>
-
-                                        @if (App\Models\Promo::where('active', true)->where('show', true)->count() > 0)
-                                            <div class="form-check form-check-info text-left">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="promo-code-action"
-                                                    @if (request('ref') != null) checked @endif>
-                                                <label class="form-check-label" for="promo-code-action">
-                                                    I have a promo code</a>
-                                                </label>
-                                            </div>
-                                            <div id="promo-code-box"
-                                                class=" @if (request('ref') == null) d-none @endif">
-                                                
-                                                <h5>Promo Code <span id="promo-applied" class="text-xs text-success d-none"> Applied</span></h5>
-                                                <span id="promo-description" class="text-sm"></span>
-                                                <div class="mb-1">
-                                                    <input type="text"
-                                                        class="form-control @error('promo_code') is-invalid @enderror"
-                                                        name="promo_code"
-                                                        id="promo-code"
-                                                        autocomplete="promo_code">
-
-
-                                                </div>
-                                                <button type="button" id="check-promo-button"
-                                                    class="btn btn-icon btn-sm bg-gradient-dark d-lg-block mt-3 mb-0"
-                                                    >
-                                                    Apply
-                                                </button>
-                                            </div>
-                                        @endif
-                            
                             </div>
 
                         </div>
-                        
+
                         <button type="submit" id="apply-button"
                             class="btn bg-gradient-dark d-lg-block mt-3 btn-block mb-0 btn-lg w-100" disabled>
                             Save Information
@@ -724,7 +714,7 @@
                                 .room_details.photo + "'); background-size:cover;");
                             $("#apply-button").attr('disabled', false);
 
-                           
+
 
 
                         } else {
@@ -735,7 +725,7 @@
                             $("#show-room-amenities").html('');
                             $("#show-room-name").html('Type');
 
-                            
+
                             // $("#show-room-location").html(data.room_location);
                             // $("#show-room-image").attr('style', "background-image: url('" + data
                             //     .room_details.photo + "'); background-size:cover;");
@@ -801,7 +791,7 @@
                             $("#promo-description").text(data.message);
                             $("#promo-description").removeClass('text-danger');
                             $("#promo-applied").removeClass('d-none').addClass('d-block');
-                        }else{
+                        } else {
                             $("#show-room-details").removeClass('d-none').addClass('d-block');
                             $("#show-room-price").html(amountFormat(data.room.price));
                             $("#show-original-price").html('');

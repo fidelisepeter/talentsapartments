@@ -315,23 +315,43 @@ class StudentController extends Controller
         $rent = DB::table('rents')->where('id', $id)->first();
         $user_id = $rent->user_id;
 
-        return view('pages.booking-renewal')->with(['main_rent' => $rent]);
+        return view('pages.renew-rent')->with(['main_rent' => $rent]);
+    }
+
+    public function cancel_renewal($id)
+    {
+        DB::table('rents')->where('id', $id)->delete();
+        return redirect()->back()->with('success', 'You have successfully cancelled Your renewal request');
     }
     public function renew_booking(Request $request, $id)
     {
 
         $rent = DB::table('rents')->where('id', $id)->first();
+        $current_room = DB::table('rooms')->where('id', $rent->room_id)->first();
         $room = DB::table('rooms')->where('id', $request->input('room'))->first();
+
+        $updated_user_data = json_encode([
+            'first_name' => $request->input('first_name'),
+            'middle_name' => $request->input('middle_name'),
+            'last_name' => $request->input('last_name'),
+            'course' => $request->input('course'),
+            'faculty' => $request->input('faculty'),
+            'department' => $request->input('department'),
+            'jaja_number' => $request->input('jaja_number'),
+        ]);
 
         $insertLastId = DB::table('rents')->insertGetId([
             'user_id' => Auth::user()->id,
             'previous_rent' => $rent->id,
             'type' => 'renewal',
-            'room_id' => $request->input('room'),
-            'price' => $room->price,
-            'original_price' => $room->price,
+            'room_id' => $current_room->id,
+            'price' => $current_room->price,
+            'original_price' => $current_room->price,
             'status' => 'pending',
-            'change_room' => $request->input('room') != $room->id ? true : false,
+            'requested_room' => $request->input('room'),
+            'requested_bedspace' => $request->input('bedspace'),
+            'change_room' => $rent->room_id == $room->id ? false : true,
+            'updated_user_data' => $updated_user_data,
             'school_check_status' => $rent->school_check_status,
             'guarantor_letter_photo' => $rent->guarantor_letter_photo,
             'guarantor_letter_status' => $rent->guarantor_letter_status,

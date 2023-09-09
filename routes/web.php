@@ -332,10 +332,14 @@ Route::get('/administrators', [UserController::class, 'administrators'])->middle
 //RENT
 Route::get('/bookings', [RentController::class, 'bookings'])->middleware('can:view-bookings');
 Route::get('/bookings/archived', [RentController::class, 'archived_rent'])->middleware('can:view-bookings');
-Route::get('/progress_bar', [RentController::class, 'progress_bar'])->middleware('can:view-bookings');
+Route::post('/bookings/{id}/approve_renewal', [RentController::class, 'approve_renewal'])->middleware('can:view-bookings');
+Route::get('/bookings/{id}/decline_renewal', [RentController::class, 'decline_renewal'])->middleware('can:view-bookings');
+Route::get('/bookings/renewal', [RentController::class, 'renewal'])->middleware('can:view-bookings');
+Route::get('/bookings/progress', [RentController::class, 'progress_bar'])->middleware('can:view-bookings');
 Route::post('/booking_status', [RentController::class, 'booking_status'])->middleware(['is.admin', 'can:view-bookings']);
 Route::post('/update-document-status', [RentController::class, 'update_booking_status'])->middleware(['is.admin', 'can:view-bookings']);
 Route::get('/booking_view/{id}', [RentController::class, 'view_bookings'])->middleware(['is.admin', 'can:view-bookings']);
+Route::get('/booking_view/{id}/renewal', [RentController::class, 'view_bookings_renewal'])->middleware(['is.admin', 'can:view-bookings']);
 Route::post('/school_info_status', [RentController::class, 'school_info_status'])->middleware(['is.admin', 'can:approve-rent']);
 Route::get('/approve/{id}', [RentController::class, 'approve'])->middleware(['is.admin', 'can:approve-rent']);
 Route::get('/reject/{id}', [RentController::class, 'reject'])->middleware(['is.admin', 'can:decline-rent']);
@@ -346,6 +350,7 @@ Route::get('/decline_rent/{id}', [RentController::class, 'decline_rent'])->middl
 Route::get('/booking/{id}', [RentController::class, 'booking'])->middleware('is.verified');
 Route::get('/booking/{id}/renew', [StudentController::class, 'booking_renew'])->middleware('is.verified');
 Route::post('/renew_booking/{id}/', [StudentController::class, 'renew_booking'])->middleware('is.verified');
+Route::get('/cancel-renewal/{id}/', [StudentController::class, 'cancel_renewal'])->middleware('is.verified');
 Route::get('/book', [RentController::class, 'book']);
 Route::post('/book_a_room', [RentController::class, 'book_room']);
 Route::post('/booking_step', [RentController::class, 'booking_step']);

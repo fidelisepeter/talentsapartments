@@ -26,10 +26,17 @@
             ->where('type', 'renewal')
             ->where('previous_rent', $main_rent->id)
             ->first();
+        $requested_room = $new_rent
+            ? DB::table('rooms')
+                ->where('id', $new_rent->requested_room)
+                ->first()
+            : '';
         
-        $requested_room = DB::table('rooms')
-            ->where('id', $new_rent->requested_room)
-            ->first();
+        $new_rent_payment = $new_rent
+            ? DB::table('invoices')
+                ->where('application_no', $new_rent->payment_reference)
+                ->first()
+            : '';
         
     @endphp
     @if ($new_rent)
@@ -44,7 +51,7 @@
                                     {{ $requested_room->name ?? '' }} has been
                                     Approved.
                                 </h5>
-                            @elseif ($new_rent->change_room && $new_rent->room_change_status == 'Decline')
+                            @elseif ($new_rent->change_room && $new_rent->room_change_status == 'Declined')
                                 <h5 class="text-center text-danger">
                                     <strong>DENIED</strong> : Your Request to change to
                                     {{ $requested_room->name ?? '' }} has been Denied due to unavailability.
@@ -55,81 +62,106 @@
                                     Approved.
                                 </h5>
                             @endif
-                            <p class="text-center">Inability to make payment by the date above invalidates the offer
-                            </p>
-                            <div class="@if ($new_rent->payment_reference == null) d-none @endif" id="payment_box"
-                                data-application_no="{{ $new_rent->payment_reference ?? '' }}"
-                                data-transaction_id="{{ strtoupper(substr(str_shuffle('abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890'), 0, 12)) }}"
-                                data-phone_number="{{ DB::table('users')->where('id', $new_rent->user_id)->value('phone_number') }}"
-                                data-full_name="{{ DB::table('users')->where('id', $new_rent->user_id)->value('first_name') .' ' .DB::table('users')->where('id', $new_rent->user_id)->value('middle_name') .' ' .DB::table('users')->where('id', $new_rent->user_id)->value('last_name') }}"
-                                data-amount="{{ $new_rent->price }}" data-original-amount="{{ $new_rent->original_price }}">
-                                <h5 class="text-center">Choose a method of payment</h5>
-                                <div>
+                            @if (
+                                (isset($new_rent_payment->payment_status) && $new_rent_payment->payment_status == 'paid') ||
+                                    (isset($new_rent_payment->status) && $new_rent_payment->status == 'paid'))
+                                {{-- Cant Edit has payment info --}}
+                                <div class="text-center">
+                                    <a class="btn btn-sm bg-gradient-info my-sm-auto mt-2 mb-0"
+                                        href="/booking/{{ $new_rent->id }}">View
+                                        Details</a>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6" {{-- id="pay_via_online" --}} onclick="payWithPaystackDeactivated()">
-                                        <div class="d-flex border border-warning rounded">
-                                            <div class="avatar avatar-lg">
-                                                <img alt="Image placeholder"
-                                                    src="{{ asset('/assets/img/logos/mastercard.png') }}">
-                                            </div>
-                                            <div class="ms-2 my-auto">
-
-
-                                                <span class="mb-0" style="color:black">Pay Online</span>
-                                                <p class="text-xs mb-0">Mastercard, Verve, Visa, etc</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6" id="pay_via_bankWWWW" data-toggle="modal"
-                                        data-target="#direct_payment_confirm">
-                                        <div class="d-flex border border-dark bg-white rounded">
-                                            <div class="avatar avatar-lg">
-                                                <img alt="Image placeholder"
-                                                    src="{{ asset('/assets/img/small-logos/icon-bulb.svg') }}"
-                                                    height="45">
-                                            </div>
-                                            <div class="ms-2 my-auto">
-                                                <span class="mb-0" style="color:black">Bank
-                                                    Transfer</span>
-                                                <p class="text-xs mb-0">Transfer from your account or bank
-                                                    branch</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex bg-gray-100 border-radius-lg p-3 my-3">
-
+                            @else
+                                <p class="text-center">
+                                    You have until
+                                    {{ \Carbon\Carbon::parse($new_rent->updated_at)->addDays(7)->format('Y-m-d') }} to make
+                                    payment of {{ number_format($new_rent->price) }}. <br>
+                                    Inability to make payment by the date above invalidates the offer
+                                </p>
+                                <div class="@if ($new_rent->payment_reference == null) d-none @endif" id="payment_box"
+                                    data-application_no="{{ $new_rent->payment_reference ?? '' }}"
+                                    data-transaction_id="{{ strtoupper(substr(str_shuffle('abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890'), 0, 12)) }}"
+                                    data-phone_number="{{ DB::table('users')->where('id', $new_rent->user_id)->value('phone_number') }}"
+                                    data-full_name="{{ DB::table('users')->where('id', $new_rent->user_id)->value('first_name') .' ' .DB::table('users')->where('id', $new_rent->user_id)->value('middle_name') .' ' .DB::table('users')->where('id', $new_rent->user_id)->value('last_name') }}"
+                                    data-amount="{{ $new_rent->price }}"
+                                    data-original-amount="{{ $new_rent->original_price }}">
+                                    <h5 class="text-center">Choose a method of payment</h5>
                                     <div>
-                                        <h6 class="my-auto">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6" {{-- id="pay_via_online" --}} onclick="payWithPaystackDeactivated()">
+                                            <div class="d-flex border border-warning rounded">
+                                                <div class="avatar avatar-lg">
+                                                    <img alt="Image placeholder"
+                                                        src="{{ asset('/assets/img/logos/mastercard.png') }}">
+                                                </div>
+                                                <div class="ms-2 my-auto">
 
-                                            <span class="text-secondary text-sm me-1">Invoice
-                                                No:</span>{{ $new_rent->payment_reference }}
 
-                                        </h6>
-                                        <h4 class="my-auto">
-                                            <span
-                                                class="text-secondary text-sm me-1">₦</span>{{ number_format($new_rent->price) }}
-
-                                        </h4>
-                                        <span class="text-secondary text-sm ms-1">Pay using your Debit Card
-                                            (master card, visa, verse, etc..) or Payment via bank
-                                            transfer</span>
-
+                                                    <span class="mb-0" style="color:black">Pay Online</span>
+                                                    <p class="text-xs mb-0">Mastercard, Verve, Visa, etc</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" id="pay_via_bankWWWW" data-toggle="modal"
+                                            data-target="#direct_payment_confirm">
+                                            <div class="d-flex border border-dark bg-white rounded">
+                                                <div class="avatar avatar-lg">
+                                                    <img alt="Image placeholder"
+                                                        src="{{ asset('/assets/img/small-logos/icon-bulb.svg') }}"
+                                                        height="45">
+                                                </div>
+                                                <div class="ms-2 my-auto">
+                                                    <span class="mb-0" style="color:black">Bank
+                                                        Transfer</span>
+                                                    <p class="text-xs mb-0">Transfer from your account or bank
+                                                        branch</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
+                                    <div class="d-flex bg-gray-100 border-radius-lg p-3 my-3">
 
+                                        <div>
+                                            <h6 class="my-auto">
+
+                                                <span class="text-secondary text-sm me-1">Invoice
+                                                    No:</span>{{ $new_rent->payment_reference }}
+
+                                            </h6>
+                                            <h4 class="my-auto">
+                                                <span
+                                                    class="text-secondary text-sm me-1">₦</span>{{ number_format($new_rent->price) }}
+
+                                            </h4>
+                                            <span class="text-secondary text-sm ms-1">Pay using your Debit Card
+                                                (master card, visa, verse, etc..) or Payment via bank
+                                                transfer</span>
+
+                                        </div>
+
+
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="@if ($new_rent->payment_reference != null) d-none @endif text-center mb-3" id="invoice_box">
-                                <h6 class="text-center">You have not created any invoice for this booking
-                                </h6>
-                                <p class="text-center">Click the button below to generate an invoice</p>
-                                <button id="create_invoice" class="btn btn-sm bg-gradient-primary mb-0 mt-2" type="button">
-                                    Make Payment
-                                </button>
-                            </div>
+                                <div class="@if ($new_rent->payment_reference != null) d-none @endif text-center mb-3"
+                                    id="invoice_box">
+                                    <h6 class="text-center">You have not created any invoice for this booking
+                                    </h6>
+                                    <p class="text-center">Click the button below to generate an invoice</p>
+                                    <button id="create_invoice" class="btn btn-sm bg-gradient-primary mb-0 mt-2"
+                                        type="button">
+                                        Make Payment
+                                    </button>
+                                </div>
+                            @endif
+                        @elseif ($new_rent->status == 'Declined')
+                            <h5 class="text-center text-danger">
+                                We are sorry to inform you that your rent renewal was declined by our administrator. if you
+                                think this is a mistake please send us an email to <a
+                                    href="mailto:                                {{ DB::table('settings')->value('complain_email_recipient') }}">
+                                    {{ DB::table('settings')->value('complain_email_recipient') }}</a>
+                            </h5>
                         @else
                             <h5 class="text-center">
                                 We have recieved your request to renew your rent and its awaiting for aproval by our
@@ -145,34 +177,41 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <form action="/cancel-renewal/{{ $main_rent->id }}" method="GET">
+                @if (
+                    (isset($new_rent_payment->payment_status) && $new_rent_payment->payment_status == 'paid') ||
+                        (isset($new_rent_payment->status) && $new_rent_payment->status == 'paid'))
+                    {{-- Cant Delete has payment info --}}
+                @else
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="/cancel-renewal/{{ $new_rent->id }}" method="GET">
 
 
 
-                            <div class="text-center">
-                                <p class="">
-                                    Thank you I am no longer interested in staying at Talents Apartment. <br>
-                                    I voluntarily give up my bedspace and i will move out by
-                                    {{ \Carbon\Carbon::parse($main_rent->expiring_date)->format('Y-m-d') }}
+                                <div class="text-center">
+                                    <p class="">
+                                        Thank you I am no longer interested in staying at Talents Apartment. <br>
+                                        I voluntarily give up my bedspace and i will move out by
+                                        {{ \Carbon\Carbon::parse($main_rent->expiring_date)->format('Y-m-d') }}
 
-                                </p>
-                                <button type="submit" id="update-documents-status"
-                                    class="btn bg-gradient-danger mt-3  mb-0 bt" onclick="this.form.submit()">
-                                    Cancel Renewal?
-                                </button>
-                            </div>
+                                    </p>
+                                    <button type="submit" id="update-documents-status"
+                                        class="btn bg-gradient-danger mt-3  mb-0 bt" onclick="this.form.submit()">
+                                        Cancel Renewal?
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
-                    </form>
-                </div>
+                @endif
             </div>
-        </div>
         </div>
     @else
         <form action="/renew_booking/{{ $current_rent->id }}" method="POST">
             @csrf
             @method('POST')
+            <input type="hidden" name="current_rent" value="{{ $current_rent->id }}">
             <div class="row">
 
                 <div class="col-lg-8 mb-lg-0 mb-4">
@@ -295,7 +334,7 @@
                                             <div class="col-sm-4 mt-sm-0">
                                                 <label>Present Bedspace</label>
 
-                                                <input name="first_name" class="multisteps-form__input form-control"
+                                                <input name="present_bedspace" class="multisteps-form__input form-control"
                                                     type="text" onfocus="focused(this)" onfocusout="defocused(this)"
                                                     value="{{ $bed_space != null ? $bed_space->room_number . ' - ' . $bed_space->name : '' }}"
                                                     disabled>
@@ -329,10 +368,9 @@
 
                                                 </select>
                                             </div>
-                                            <div na class="col-12 mt-sm-0">
+                                            <div class="col-12 col-md-6 mt-sm-0">
                                                 <label>Room Type</label>
-                                                <select class="form-control room" name="room" id="room"
-                                                    name="room" required>
+                                                <select class="form-control room" id="room" name="room" required>
                                                     @if ($room != null)
                                                         @php
                                                             $rooms = DB::table('rooms')
@@ -354,6 +392,14 @@
                                                         @endphp
                                                     @endif
 
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-6 mt-sm-0">
+                                                <label>Bed Space</label>
+                                                <select class="form-control room" id="show-bedspaces" name="bedspace">
+                                                    <option value="{{ $bed_space != null ? $bed_space->id : '' }}">
+                                                        {{ $bed_space != null ? $bed_space->room_number . ' - ' . $bed_space->name : '' }}
+                                                    </option>
                                                 </select>
                                             </div>
 
@@ -450,7 +496,7 @@
                 </div>
             </div>
         </div>
-    </div>s
+    </div>
 @endsection
 @section('script')
     <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -506,10 +552,12 @@
 
                         if (data.status == 'success') {
 
+
                             $("#show-room-details").removeClass('d-none').addClass('d-block');
                             $("#show-room-price").html(amountFormat(data.room_details.price));
                             $("#show-original-price").html('');
                             $("#show-room-amenities").html(data.room_amenities);
+                            $("#show-bedspaces").html(data.bed_space_list);
                             $("#show-room-name").html(data.room_details.name);
                             $("#show-room-location").html(data.room_location);
                             $("#show-room-image").attr('style', "background-image: url('" + data
@@ -522,6 +570,7 @@
                             $("#show-room-price").html('0.00');
                             $("#show-original-price").html('');
                             $("#show-room-amenities").html('');
+                            $("#show-bedpaces").html('');
                             $("#show-room-name").html('Type');
                             $("#apply-button").attr('disabled', true);
                         }
@@ -588,8 +637,8 @@
 
             $("#create_invoice").on('click', function() {
 
-                var rent_id = "{{ $new_rent->id }}";
-                var user_id = "{{ $new_rent->user_id }}";
+                var rent_id = "{{ $new_rent->id ?? '' }}";
+                var user_id = "{{ $new_rent->user_id ?? '' }}";
                 var _token = "{{ csrf_token() }}";
 
                 $.ajax({
