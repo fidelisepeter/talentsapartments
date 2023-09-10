@@ -188,14 +188,14 @@ class RentController extends Controller
         return view('pages.view_bookings')->with(['id' => $id, 'rent' => $rent, 'user_id' => $user_id]);
     }
 
-    public function replaceDynamicPlaceholders($template, $expiringDate)
+    public function replaceDynamicPlaceholders($template, $date)
     {
         $template = preg_replace_callback(
-            '/\[moveoutdate([+-]\d+)\]/i',
-            function ($matches) use ($expiringDate) {
+            '/\[current_date([+-]\d+)\]/i',
+            function ($matches) use ($date) {
                 $offset = (int) $matches[1];
                 $operation = $offset >= 0 ? 'addDays' : 'subDays'; // Determine whether to add or subtract
-                $date = \Carbon\Carbon::parse($expiringDate)
+                $date = \Carbon\Carbon::parse($date)
                     ->$operation(abs($offset))
                     ->format('F j, Y');
                 return $date;
@@ -232,8 +232,8 @@ class RentController extends Controller
             ]);
         $link = url('/booking/' . $rent->id . '/renew');
 
-        $input = ['[first_name]', '[middle_name]', '[last_name]', '[status]', '[link]', '[room_name]'];
-        $outfilled = [Auth::user()->first_name, Auth::user()->middle_name, Auth::user()->last_name, $request->room_change_status, $link, $new_room->name ?? ''];
+        $input = ['[first_name]', '[middle_name]', '[last_name]', '[status]', '[link]', '[room_name]', '[amoun]'];
+        $outfilled = [Auth::user()->first_name, Auth::user()->middle_name, Auth::user()->last_name, $request->room_change_status, $link, $new_room->name ?? '', $room_price];
         $message =  $this->replaceDynamicPlaceholders(str_replace($input, $outfilled,  DB::table('settings')->value('application_recieved_message')), Carbon::now());
 
 

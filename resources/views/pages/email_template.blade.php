@@ -565,8 +565,9 @@
                         Input custom template to that will be sent to user after admin approve or decline renewal request
                         <br>
                         use <code>[first_name]</code>, <code>[last_name]</code>, <code>[email]</code>,
-                        <code>[status]</code>, <code>[link]</code>, <code>[room_name]</code>,<code>[moveoutdate-45]</code>
-                        where 45 can be any number of your choice
+                        <code>[status]</code>, <code>[amoun]</code>, <code>[link]</code>,
+                        <code>[room_name]</code>,<code>[current_date+7]</code>
+                        where 7 can be any number of your choice
 
                     </p>
                     <form action="update_email_template" method="post" enctype="multipart/form-data">
