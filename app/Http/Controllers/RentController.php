@@ -188,14 +188,31 @@ class RentController extends Controller
         return view('pages.view_bookings')->with(['id' => $id, 'rent' => $rent, 'user_id' => $user_id]);
     }
 
+    public function replaceDynamicPlaceholders($template, $expiringDate)
+    {
+        $template = preg_replace_callback(
+            '/\[moveoutdate([+-]\d+)\]/i',
+            function ($matches) use ($expiringDate) {
+                $offset = (int) $matches[1];
+                $operation = $offset >= 0 ? 'addDays' : 'subDays'; // Determine whether to add or subtract
+                $date = \Carbon\Carbon::parse($expiringDate)
+                    ->$operation(abs($offset))
+                    ->format('F j, Y');
+                return $date;
+            },
+            $template,
+        );
+
+        return $template;
+    }
     public function approve_renewal(Request $request, $id)
     {
         // dd($request->all());
         $rent = DB::table('rents')->where('id', $id)->first();
+        $new_rent = DB::table('rents')->where('type', 'renewal')->where('previous_rent', $rent->id)->first();
+        $new_room = DB::table('rooms')->where('id', $new_rent->requested_room ?? 'no command')->first();
 
         if ($request->room_change_status == 'Approved') {
-            $new_rent = DB::table('rents')->where('type', 'renewal')->where('previous_rent', $rent->id)->first();
-            $new_room = DB::table('rooms')->where('id', $new_rent->requested_room)->first();
             $room_id = $new_room->id;
             $room_price = $new_room->price;
         } else {
@@ -213,6 +230,15 @@ class RentController extends Controller
                 'original_price' => $room_price,
                 'status' => 'Approved',
             ]);
+        $link = url('/booking/' . $rent->id . '/renew');
+
+        $input = ['[first_name]', '[middle_name]', '[last_name]', '[status]', '[link]', '[room_name]'];
+        $outfilled = [Auth::user()->first_name, Auth::user()->middle_name, Auth::user()->last_name, $request->room_change_status, $link, $new_room->name ?? ''];
+        $message =  $this->replaceDynamicPlaceholders(str_replace($input, $outfilled,  DB::table('settings')->value('application_recieved_message')), Carbon::now());
+
+
+        $settings = DB::table('settings')->first();
+        send_mail('Admin', $settings->reg_email_recipient, 'Rent Renewal Status', $message);
         return redirect()->back()->with('success', 'Renewal request has been approved');
     }
 
@@ -225,6 +251,8 @@ class RentController extends Controller
             ->update([
                 'status' => 'Declined'
             ]);
+
+
         return redirect()->back()->with('success', 'Renewal request has been declined');
     }
 

@@ -26,6 +26,27 @@
     @endif
 @section('content')
 
+
+    @php
+        function processModalTemplate($template, $expiringDate)
+        {
+            $template = preg_replace_callback(
+                '/\[moveoutdate([+-]\d+)\]/i',
+                function ($matches) use ($expiringDate) {
+                    $offset = (int) $matches[1];
+                    $operation = $offset >= 0 ? 'addDays' : 'subDays'; // Determine whether to add or subtract
+                    $date = \Carbon\Carbon::parse($expiringDate)
+                        ->$operation(abs($offset))
+                        ->format('F j, Y');
+                    return $date;
+                },
+                $template,
+            );
+        
+            return $template;
+        }
+    @endphp
+
     <div class="row">
         <div class="col-12">
             @if (session('success'))
@@ -48,16 +69,13 @@
     <div class="row mb-5">
         <div class="col-12">
 
-            @if (
-                $rent->user_id == Auth::user()->id &&
-                    !empty($rent->expiring_date) &&
-                    \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($rent->expiring_date)) <= 45)
+            {{-- @if ($rent->user_id == Auth::user()->id && !empty($rent->expiring_date) && \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($rent->expiring_date)) <= 45)
                 <div class="alert alert-info" style="color:white">
                     Your Rent will expire in
                     {{ \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($rent->expiring_date)) }} days! Click <a
                         href="/booking/{{ $rent->id }}/renew">Here</a> to request renewal
                 </div>
-            @endif
+            @endif --}}
         </div>
         <div class="col-lg-3">
             <div class="position-sticky top-1
@@ -1633,6 +1651,31 @@
             </div>
         </div>
     </div>
+    <div class="modal fade show" id="renewal_notice" tabindex="-1" role="dialog" aria-labelledby="renewal_notice"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center"> <!-- Add text-center class here -->
+                    <h5 class="modal-title" id="exampleModalLabel">Your Rent will expire in
+                        {{ \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($rent->expiring_date)) }} day(s)!</h5>
+                    <button type="button" class="btn-close text-dark" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-3">
+                    {!! processModalTemplate(DB::table('settings')->value('rent_renewal_notice'), $rent->expiring_date) !!}
+
+
+                    <div class="text-center mt-3">
+                        <a href="/booking/{{ $rent->id }}/renew" class="btn btn-sm bg-gradient-primary">Renew
+                            Rent</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 
 @section('script')
@@ -1640,6 +1683,16 @@
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="../assets/js/booking-payment-process.js"></script>
     {{-- <script src="../assets/js/plugins/sweetalert.min.js"></script> --}}
+    @if (
+        $rent->user_id == Auth::user()->id &&
+            !empty($rent->expiring_date) &&
+            \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($rent->expiring_date)) <= 45)
+        <script>
+            $(document).ready(function() {
+                $('#renewal_notice').modal('show');
+            });
+        </script>
+    @endif
     <script>
         function payWithPaystackDeactivated() {
             const requiredButtons = Swal.mixin({
@@ -1662,28 +1715,8 @@
 
         $(document).ready(function() {
 
-            // $("#update_consent").on('change', function() {
-            //     var document_id = $(this).data('document');
-            //     var status = $(this).data('status');
-            //     $('#consent_document_id').val(document_id);
-            //     $('#consent_status').val(status);
-            //     // alert($(this).val())
-            //     this.form.submit()
 
-            // });
-            // function addYears() {
-            //     var date1 = new Date();
-            //     var currYear = date1.getFullYear();
-            //     var currMonth = date1.getMonth();
-            //     var currDay = date1.getDate();
-            //     var currHours = date1.getHours();
-            //     var currMinutes = date1.getMinutes();
-            //     var currSeconds = date1.getSeconds();
-            //     var userYears = document.getElementById("userVal").value;
-            //     var newDate = new Date(currYear + Number(userYears), currMonth, currDay, currHours, currMinutes,
-            //         currSeconds);
-            //     document.getElementById("results").textContent = newDate;
-            // }
+
 
             function loadBedSpace() {
                 // alert($("#room_numbers").val());
@@ -1903,6 +1936,6 @@
 
             });
 
-        });
-    </script>
-@endsection
+        }); <
+        /?script>
+    @endsection

@@ -270,16 +270,15 @@ class AdminController extends Controller
                     'proof_status' => 'Approved',
                     'school_check_status' => 'Approved',
                 ]);
-// dd($rent);
+                // dd($rent);
 
-                if($rent->referral_code != null){
+                if ($rent->referral_code != null) {
                     DB::table('referrals_earnings')->insert([
                         'amount' =>  DB::table('settings')->value('referral_amount'),
                         'referent' =>  $rent->user_id,
                         'referrer' =>  User::where('referral_code', $rent->referral_code)->value('id'),
                         'referral_code' =>  $rent->referral_code,
                     ]);
-    
                 }
 
                 $link = url('/booking/' . $rent->id);
@@ -318,7 +317,7 @@ class AdminController extends Controller
                 $referral_code = json_decode($invoice->payment_data, true);
 
                 $referral_code = $referral_code['referral_code'] ?? '';
-               
+
                 $password = 'pass' . substr($random, 0, 6);
                 // dd([
                 //     'first_name' => $firstname,
@@ -662,9 +661,21 @@ class AdminController extends Controller
                 ]);
             }
 
-            if ($request->rent_expiring_message) {
+            if ($request->renewal_request_template) {
                 DB::table('settings')->update([
-                    'rent_expiring_message' => $request->rent_expiring_message,
+                    'renewal_request_template' => $request->renewal_request_template,
+                ]);
+            }
+
+            if ($request->renewal_status_template) {
+                DB::table('settings')->update([
+                    'renewal_status_template' => $request->renewal_status_template,
+                ]);
+            }
+
+            if ($request->rent_renewal_notice) {
+                DB::table('settings')->update([
+                    'rent_renewal_notice' => $request->rent_renewal_notice,
                 ]);
             }
 

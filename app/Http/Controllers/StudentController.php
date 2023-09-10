@@ -363,13 +363,14 @@ class StudentController extends Controller
             'year' => DB::table('settings')->value('current_year'),
         ]);
 
+        $link = url('/booking_view/' . $rent->id . '/renewal');
         //send mail to admin
-        //  $input = ['[first_name]', '[middle_name]', '[last_name]'];
-        // $outfilled = [Auth::user()->first_name, Auth::user()->middle_name, Auth::user()->last_name];
-        // $message =  str_replace($input, $outfilled,  DB::table('settings')->value('application_recieved_message'));
+        $input = ['[first_name]', '[middle_name]', '[last_name]', '[link]'];
+        $outfilled = [Auth::user()->first_name, Auth::user()->middle_name, Auth::user()->last_name, $link];
+        $message =  str_replace($input, $outfilled,  DB::table('settings')->value('application_recieved_message'));
 
-        //  $settings = DB::table('settings')->first();
-        //  send_mail('Admin', $settings->reg_email_recipient, 'Talents Apartment Application', $message);
+        $settings = DB::table('settings')->first();
+        send_mail('Admin', $settings->reg_email_recipient, 'Rent Renewal Request', $message);
 
         return redirect()->back()->with('success', 'Renewal Sent and waiting for aproval');
     }
