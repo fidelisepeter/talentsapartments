@@ -179,12 +179,12 @@
                                     <span class="sidenav-normal">All Residents </span>
                                 </a>
                             </li>
-                            <li class="nav-item ">
+                            {{-- <li class="nav-item ">
                                 <a class="nav-link " href="/bookings/archived">
                                     <span class="sidenav-mini-icon"> <i class="fa fa-circle"></i> </span>
                                     <span class="sidenav-normal"> Archived </span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="nav-item ">
                                 <a class="nav-link " href="/users">
                                     <span class="sidenav-mini-icon"> <i class="fa fa-circle"></i> </span>

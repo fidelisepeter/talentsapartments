@@ -136,7 +136,7 @@ class RentController extends Controller
         $rents = DB::table('rents')->where('status', 'Archived')->where('year', $viewingYear)->orderBy('id', "DESC")->get();
 
 
-        return view('pages.bookings-renewals')->with(['rents' => $rents]);
+        return view('pages.bookings-archived')->with(['rents' => $rents]);
     }
 
     public function renewal()

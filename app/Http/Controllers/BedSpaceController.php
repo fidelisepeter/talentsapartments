@@ -39,15 +39,15 @@ class BedSpaceController extends Controller
 
     function remove_resident($id)
     {
-        
-       
+
+
 
         BedSpace::where('id', $id)->update([
             'allocated' => false,
             'user_id' => Null,
         ]);
 
-        
+
         $rent = DB::table('rents')->where('bed_space', $id)->first();
 
         DB::table('rents')->where('id', $rent->id)->update([
@@ -114,9 +114,9 @@ class BedSpaceController extends Controller
         }
 
 
-       
+
         $room_types = Room::where('year', DB::table('settings')->value('viewing_year'))->get()->sortByDesc('available');
-        
+
         return view('pages.bed-space')->with([
             'room_view' => $getAll,
             'freespace' => $freespace,
@@ -218,8 +218,6 @@ class BedSpaceController extends Controller
 
     function residentDetails($id)
     {
-
-
 
         $resident = BedSpace::where('user_id', $id)->where('allocated', true)->first();
 

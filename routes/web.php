@@ -327,6 +327,7 @@ Route::get('/buildings', [RoomController::class, 'buildings'])->middleware('can:
 
 //USER
 Route::get('/users', [UserController::class, 'users'])->middleware('can:view-users');
+Route::get('/user/{user}', [UserController::class, 'userDetails'])->middleware('can:view-users');
 Route::get('/administrators', [UserController::class, 'administrators'])->middleware('can:view-administrators');
 
 //RENT
